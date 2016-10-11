@@ -12,7 +12,7 @@ import android.util.Log;
 public class DBHelper extends SQLiteOpenHelper {
     final static String LOG_TAG = "Log";
     final static int VERSION_DB = 1;
-    public static String NAME_TABLE = "raspisanieBusV2";
+    public static String NAME_TABLE = "raspisanieBusV3";
     final static String ROW_IDAVTO = "idAvto";
     final static String ROW_NOMERAVTO = "nomerAvto";
     final static String ROW_NAME1 = "name1";
@@ -21,6 +21,7 @@ public class DBHelper extends SQLiteOpenHelper {
     final static String ROW_SGORODA = "sGoroda";
     final static String ROW_COLOR = "color";
     final static String ROW_PRICE = "price";
+    final static String ROW_PRICE_MONEY = "priceMoney";
     final static String ROW_DETALS = "detals";
 
     public DBHelper(Context context) {
@@ -41,6 +42,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 + ROW_SGORODA+" text,"
                 + ROW_COLOR+" text,"
                 + ROW_PRICE+" text,"
+                + ROW_PRICE_MONEY+" text,"
                 + ROW_DETALS+" text" + ");");
     }
 

@@ -102,6 +102,7 @@ public class AdapterInfo extends RecyclerView.Adapter<AdapterInfo.MyViewHolder> 
                 intent.putExtra("vGorod", infoList.get(position).getvGorod());
                 intent.putExtra("sGoroda", infoList.get(position).getsGoroda());
                 intent.putExtra("price", infoList.get(position).getPrice());
+                intent.putExtra("priceMoney", infoList.get(position).getPriceMoney());
                 context.startActivity(intent, options.toBundle());
             }
         });

@@ -12,9 +12,10 @@ public class Info {
     final String sGoroda;
     final String color;
     final String price;
+    final String priceMoney;
     final String detals;
 
-    public Info(String idAvto, String nomerAvto, String name1, String name2, String vGorod, String sGoroda, String color, String price, String detals) {
+    public Info(String idAvto, String nomerAvto, String name1, String name2, String vGorod, String sGoroda, String color, String price, String priceMoney, String detals) {
         this.idAvto = idAvto;
         this.nomerAvto = nomerAvto;
         this.name1 = name1;
@@ -22,6 +23,7 @@ public class Info {
         this.vGorod = vGorod;
         this.sGoroda = sGoroda;
         this.price = price;
+        this.priceMoney = priceMoney;
         this.color = color;
         this.detals = detals;
     }
@@ -52,6 +54,9 @@ public class Info {
 
     public String getPrice() {
         return price;
+    }
+    public String getPriceMoney() {
+        return priceMoney;
     }
 
     public String getColor() {

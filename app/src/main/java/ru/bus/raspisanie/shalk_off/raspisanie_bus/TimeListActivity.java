@@ -23,7 +23,7 @@ public class TimeListActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private TextView textViewNomerAvto,textViewName1,textViewName2;
-    private String color,nomerAvto,name1,name2, price;
+    private String color,nomerAvto,name1,name2, price, priceMoney;
     private int[] tabIcons = {
             R.drawable.ic_avtobus,
             R.drawable.ic_avtobus
@@ -46,6 +46,7 @@ public class TimeListActivity extends AppCompatActivity {
         name1 = intent.getStringExtra("name1");
         name2 = intent.getStringExtra("name2");
         price = intent.getStringExtra("price");
+        priceMoney = intent.getStringExtra("priceMoney");
 
         textViewNomerAvto.setText(nomerAvto);
         GradientDrawable gd = (GradientDrawable) textViewNomerAvto.getBackground().getCurrent();
@@ -95,6 +96,8 @@ public class TimeListActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intentPrice = new Intent(TimeListActivity.this,PriceActivity.class);
                 intentPrice.putExtra("price", price);
+                intentPrice.putExtra("priceMoney",priceMoney);
+                intentPrice.putExtra("nomer",nomerAvto);
                 startActivity(intentPrice);
             }
         });

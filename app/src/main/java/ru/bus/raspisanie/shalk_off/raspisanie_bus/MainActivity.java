@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
     private String dateObnoviKlient;
     private AlertDialog.Builder ad;
     private boolean flag = false;
-    private boolean flag2 = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
             int s_gorodaColIndex = c.getColumnIndex("sGoroda");
             int colorColIndex = c.getColumnIndex("color");
             int priceColIndex = c.getColumnIndex("price");
+            int priceMoneyColIndex = c.getColumnIndex("priceMoney");
             int detalsColIndex = c.getColumnIndex("detals");
             do {
                 // получаем значения по номерам столбцов и пишем все в лог
@@ -122,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
                         c.getString(s_gorodaColIndex),
                         c.getString(colorColIndex),
                         c.getString(priceColIndex),
+                        c.getString(priceMoneyColIndex),
                         c.getString(detalsColIndex)));
             } while (c.moveToNext());
         } else
@@ -274,6 +275,7 @@ public class MainActivity extends AppCompatActivity {
             contentValues.put("sGoroda", ""+list.get(i).sGoroda);
             contentValues.put("color", ""+list.get(i).color);
             contentValues.put("price", ""+list.get(i).price);
+            contentValues.put("priceMoney", ""+list.get(i).priceMoney);
             contentValues.put("detals", ""+list.get(i).detals);
             long rowID = db.insert(DBHelper.NAME_TABLE, null, contentValues);
             Log.d(LOG_TAG, "row inserted, ID = " + rowID);

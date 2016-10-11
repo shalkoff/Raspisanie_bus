@@ -40,6 +40,9 @@ public class JSONAvtobuses {
         @SerializedName("price")
         @Expose
         public String price;
+        @SerializedName("priceMoney")
+        @Expose
+        public String priceMoney;
         @SerializedName("detals")
         @Expose
         public String detals;
