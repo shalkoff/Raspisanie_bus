@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Расписание</string>
+    <string name="marsh_sled">Маршрут следования:</string>
+    <string name="tehnich_info">Техническая информация:</string>
+    <string name="ostanovok">Остановок:</string>
+    <string name="perevoz">Компания-перевозчик:</string>
+    <string name="bt_otrk_v_navigatore">Открыть в навигаторе</string>
+    <string name="phone">Телефон:</string>
+    <string name="address_kompanii">Адрес:</string>
 </resources>

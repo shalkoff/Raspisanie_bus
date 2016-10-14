@@ -65,10 +65,12 @@ public class MainActivity extends AppCompatActivity {
     private AlertDialog.Builder ad;
     private boolean flag = false;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        AppRater.app_launched(this);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://serverman4ik.myarena.ru/")
                 .addConverterFactory(GsonConverterFactory.create())

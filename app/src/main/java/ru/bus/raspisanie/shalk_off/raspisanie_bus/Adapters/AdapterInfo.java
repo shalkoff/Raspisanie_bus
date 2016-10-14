@@ -8,11 +8,13 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -25,6 +27,8 @@ import java.util.List;
 
 import ru.bus.raspisanie.shalk_off.raspisanie_bus.DescribingClasses.Info;
 import ru.bus.raspisanie.shalk_off.raspisanie_bus.DescribingClasses.Raspisanie;
+import ru.bus.raspisanie.shalk_off.raspisanie_bus.DetalsMarshActivity;
+import ru.bus.raspisanie.shalk_off.raspisanie_bus.PriceActivity;
 import ru.bus.raspisanie.shalk_off.raspisanie_bus.R;
 import ru.bus.raspisanie.shalk_off.raspisanie_bus.TimeListActivity;
 
@@ -34,6 +38,7 @@ public class AdapterInfo extends RecyclerView.Adapter<AdapterInfo.MyViewHolder> 
     private Context context;
     private List<Info> infoList;
     private List<Raspisanie> raspisanieList;
+    private int posGlobal;
     public AdapterInfo(List<Info> infoList) {
         this.infoList = infoList;
     }
@@ -57,6 +62,7 @@ public class AdapterInfo extends RecyclerView.Adapter<AdapterInfo.MyViewHolder> 
     }
     @Override
     public void onBindViewHolder(final AdapterInfo.MyViewHolder holder, final int position) {
+        posGlobal=position;
         Info info = infoList.get(position);
         holder.nomerAvto.setText(info.getNomerAvto());
         GradientDrawable gd = (GradientDrawable) holder.nomerAvto.getBackground().getCurrent();
@@ -78,8 +84,10 @@ public class AdapterInfo extends RecyclerView.Adapter<AdapterInfo.MyViewHolder> 
             @Override
             public void onClick(View v) {
                 Log.i("RecyclerView", "Вы щёлкнули на позиции " + clickPos);
-                Toast.makeText(context, "щёлкнули", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, "щёлкнули", Toast.LENGTH_SHORT).show();
                 //Открывать меню с настройками
+                showPopupMenu(v,clickPos);
+
             }
         });
         holder.linerBlock.setOnClickListener(new View.OnClickListener() {
@@ -131,6 +139,53 @@ public class AdapterInfo extends RecyclerView.Adapter<AdapterInfo.MyViewHolder> 
             imageButton_settings= (ImageButton) itemView.findViewById(R.id.imageView);
             linerBlock = (LinearLayout) itemView.findViewById(R.id.liner_block);
         }
+    }
+
+    private void showPopupMenu(View v, final int position) {
+        PopupMenu popupMenu = new PopupMenu(context, v);
+        popupMenu.inflate(R.menu.avto_menu); // Для Android 4.0
+        // для версии Android 3.0 нужно использовать длинный вариант
+        // popupMenu.getMenuInflater().inflate(R.menu.popupmenu,
+        // popupMenu.getMenu());
+
+        popupMenu
+                .setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        // Toast.makeText(PopupMenuDemoActivity.this,
+                        // item.toString(), Toast.LENGTH_LONG).show();
+                        // return true;
+                        Intent intent;
+                        switch (item.getItemId()) {
+
+                            case R.id.price_menu:
+                                intent = new Intent((Activity) context,PriceActivity.class);
+                                intent.putExtra("price", infoList.get(position).getPrice());
+                                intent.putExtra("priceMoney", infoList.get(position).getPriceMoney());
+                                intent.putExtra("nomer", infoList.get(position).getNomerAvto());
+                                context.startActivity(intent);
+                                return true;
+                            case R.id.detals_menu:
+                                intent = new Intent((Activity) context,DetalsMarshActivity.class);
+                                intent.putExtra("nomer", infoList.get(position).getNomerAvto());
+                                intent.putExtra("detals", infoList.get(position).getDetals());
+                                context.startActivity(intent);
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+                });
+
+        popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
+
+            @Override
+            public void onDismiss(PopupMenu menu) {
+                //Toast.makeText(context.getApplicationContext(), "onDismiss", Toast.LENGTH_SHORT).show();
+            }
+        });
+        popupMenu.show();
     }
 
 }
