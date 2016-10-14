@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="Стоимость проезда"
-        android:id="@+id/price_menu" />
-    <item android:title="Детали маршрута"
-        android:id="@+id/detals_menu" />
-</menu>
