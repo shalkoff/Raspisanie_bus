@@ -1,4 +1,4 @@
-package ru.bus.raspisanie.shalk_off.raspisanie_bus;
+package ru.bus.raspisanie.shalk_off.raspisanie_bus.Activitys;
 
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -7,12 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.LightingColorFilter;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,16 +16,13 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -40,10 +31,13 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.bus.raspisanie.shalk_off.raspisanie_bus.Adapters.AdapterInfo;
+import ru.bus.raspisanie.shalk_off.raspisanie_bus.AppRater;
 import ru.bus.raspisanie.shalk_off.raspisanie_bus.DataBase.DBHelper;
 import ru.bus.raspisanie.shalk_off.raspisanie_bus.DescribingClasses.Info;
+import ru.bus.raspisanie.shalk_off.raspisanie_bus.GetDiveceName;
 import ru.bus.raspisanie.shalk_off.raspisanie_bus.JSONRequest.JSONAvtobuses;
 import ru.bus.raspisanie.shalk_off.raspisanie_bus.JSONRequest.JSONVersion;
+import ru.bus.raspisanie.shalk_off.raspisanie_bus.R;
 import ru.bus.raspisanie.shalk_off.raspisanie_bus.Services.APIService;
 
 public class MainActivity extends AppCompatActivity {
@@ -64,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
     private String dateObnoviKlient;
     private AlertDialog.Builder ad;
     private boolean flag = false;
-
+    private String nameDivece;
+    String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,10 +70,19 @@ public class MainActivity extends AppCompatActivity {
                 .baseUrl("http://serverman4ik.myarena.ru/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+
         service = retrofit.create(APIService.class);
         dbHelper = new DBHelper(this);
         nomerAvto = (TextView) findViewById(R.id.nomer_avtobusa);
         recyclerView1 = (RecyclerView) findViewById(R.id.recyclerView);
+
+        //Получаем токен имодель телефона
+        token = FirebaseInstanceId.getInstance().getToken();
+        GetDiveceName getDiveceName = new GetDiveceName();
+        nameDivece = getDiveceName.getDeviceName();
+        setTokenToMyServer(nameDivece,token);
+
+
         //Чек обновления
         checkUpdate();
         zagruzikaIzSQLiteAll();
@@ -88,6 +92,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    }
+
+    private void setTokenToMyServer(String nameDivece, String token) {
+        //отправляем запрос на мой сервак, в php надо сделать проверку на валидность токена.
     }
 
     private void zagruzikaIzSQLiteAll() {

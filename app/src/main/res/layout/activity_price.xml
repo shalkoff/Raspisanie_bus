@@ -4,7 +4,7 @@
     android:id="@+id/activity_price"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ru.bus.raspisanie.shalk_off.raspisanie_bus.PriceActivity">
+    tools:context="ru.bus.raspisanie.shalk_off.raspisanie_bus.Activitys.PriceActivity">
 
     <ListView
         android:layout_width="match_parent"

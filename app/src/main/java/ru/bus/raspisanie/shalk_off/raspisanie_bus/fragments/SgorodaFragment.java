@@ -1,6 +1,5 @@
-package ru.bus.raspisanie.shalk_off.raspisanie_bus.fragments;
+package ru.bus.raspisanie.shalk_off.raspisanie_bus.Fragments;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 

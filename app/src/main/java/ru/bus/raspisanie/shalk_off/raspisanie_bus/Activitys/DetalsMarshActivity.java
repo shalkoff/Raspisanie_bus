@@ -1,9 +1,12 @@
-package ru.bus.raspisanie.shalk_off.raspisanie_bus;
+package ru.bus.raspisanie.shalk_off.raspisanie_bus.Activitys;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
+
+import ru.bus.raspisanie.shalk_off.raspisanie_bus.Caclulate;
+import ru.bus.raspisanie.shalk_off.raspisanie_bus.R;
 
 public class DetalsMarshActivity extends AppCompatActivity {
     String nomer,detals;

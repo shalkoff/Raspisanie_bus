@@ -1,4 +1,4 @@
-package ru.bus.raspisanie.shalk_off.raspisanie_bus;
+package ru.bus.raspisanie.shalk_off.raspisanie_bus.Activitys;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
@@ -13,11 +13,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import ru.bus.raspisanie.shalk_off.raspisanie_bus.Adapters.FragmentsAdapter;
-import ru.bus.raspisanie.shalk_off.raspisanie_bus.fragments.SgorodaFragment;
-import ru.bus.raspisanie.shalk_off.raspisanie_bus.fragments.VgorodFragment;
+import ru.bus.raspisanie.shalk_off.raspisanie_bus.Fragments.SgorodaFragment;
+import ru.bus.raspisanie.shalk_off.raspisanie_bus.Fragments.VgorodFragment;
+import ru.bus.raspisanie.shalk_off.raspisanie_bus.R;
 
 public class TimeListActivity extends AppCompatActivity {
     private TabLayout tabLayout;

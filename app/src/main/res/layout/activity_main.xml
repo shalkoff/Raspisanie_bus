@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="ru.bus.raspisanie.shalk_off.raspisanie_bus.MainActivity"
+    tools:context="ru.bus.raspisanie.shalk_off.raspisanie_bus.Activitys.MainActivity"
     android:background="#f2f2f2"
     android:orientation="vertical">
 

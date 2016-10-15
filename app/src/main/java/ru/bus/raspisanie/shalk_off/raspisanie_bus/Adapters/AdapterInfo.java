@@ -18,19 +18,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
 import ru.bus.raspisanie.shalk_off.raspisanie_bus.DescribingClasses.Info;
 import ru.bus.raspisanie.shalk_off.raspisanie_bus.DescribingClasses.Raspisanie;
-import ru.bus.raspisanie.shalk_off.raspisanie_bus.DetalsMarshActivity;
-import ru.bus.raspisanie.shalk_off.raspisanie_bus.PriceActivity;
+import ru.bus.raspisanie.shalk_off.raspisanie_bus.Activitys.DetalsMarshActivity;
+import ru.bus.raspisanie.shalk_off.raspisanie_bus.Activitys.PriceActivity;
 import ru.bus.raspisanie.shalk_off.raspisanie_bus.R;
-import ru.bus.raspisanie.shalk_off.raspisanie_bus.TimeListActivity;
+import ru.bus.raspisanie.shalk_off.raspisanie_bus.Activitys.TimeListActivity;
 
 public class AdapterInfo extends RecyclerView.Adapter<AdapterInfo.MyViewHolder> {
 

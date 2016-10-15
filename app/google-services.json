@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "38521213731",
+    "firebase_url": "https://raspisaniebus.firebaseio.com",
+    "project_id": "raspisaniebus",
+    "storage_bucket": "raspisaniebus.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:38521213731:android:3494f66f03c41b10",
+        "android_client_info": {
+          "package_name": "ru.bus.raspisanie.shalk_off.raspisanie_bus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "38521213731-dbr6epe372fmulolh4golqnp5egksmhd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ru.bus.raspisanie.shalk_off.raspisanie_bus",
+            "certificate_hash": "F6E488E5D2D2CBAFBBE165BDB2BD65F2F647E144"
+          }
+        },
+        {
+          "client_id": "38521213731-e59h8rddlplmiod3idjpti22vimq4f68.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCb0pMA2dDxHnxWyJyKrBWhcSe_ZAQgR-M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "38521213731-e59h8rddlplmiod3idjpti22vimq4f68.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

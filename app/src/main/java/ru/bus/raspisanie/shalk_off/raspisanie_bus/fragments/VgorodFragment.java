@@ -1,4 +1,4 @@
-package ru.bus.raspisanie.shalk_off.raspisanie_bus.fragments;
+package ru.bus.raspisanie.shalk_off.raspisanie_bus.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;

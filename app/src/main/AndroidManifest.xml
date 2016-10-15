@@ -10,7 +10,13 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"
+        <service
+            android:name=".Services.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <activity android:name=".Activitys.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,12 +25,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".TimeListActivity"
+            android:name=".Activitys.TimeListActivity"
             android:theme="@style/your_own_name"
             android:screenOrientation="portrait"/>
-        <activity android:name=".PriceActivity"
+        <activity android:name=".Activitys.PriceActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".DetalsMarshActivity"
+        <activity android:name=".Activitys.DetalsMarshActivity"
             android:screenOrientation="portrait"></activity>
     </application>
 
