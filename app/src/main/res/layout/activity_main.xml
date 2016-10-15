@@ -11,6 +11,23 @@
     android:background="#f2f2f2"
     android:orientation="vertical">
 
+        <TextView
+            android:text="Расписание не загружено!"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView9"
+            android:gravity="center" />
+
+        <Button
+            android:text="загрузить"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/downloaded_rasp"
+            style="@style/Widget.AppCompat.Button.Small"
+            android:gravity="center_vertical|center_horizontal|center"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"

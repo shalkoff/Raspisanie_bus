@@ -32,6 +32,9 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".Activitys.DetalsMarshActivity"
             android:screenOrientation="portrait"></activity>
+        <activity android:name=".Activitys.SettingsActivity"
+            android:screenOrientation="portrait"
+            android:label="Настройки"></activity>
     </application>
 
 </manifest>

@@ -7,4 +7,6 @@
     <string name="bt_otrk_v_navigatore">Открыть в навигаторе</string>
     <string name="phone">Телефон:</string>
     <string name="address_kompanii">Адрес:</string>
+    <string name="check_news">Обновление</string>
+    <string name="check_news_description">Уведомлять об изменении расписания</string>
 </resources>

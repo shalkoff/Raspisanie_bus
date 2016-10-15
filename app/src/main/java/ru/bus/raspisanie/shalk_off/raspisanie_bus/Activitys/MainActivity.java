@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Handler;
+import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,12 +19,15 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private AdapterInfo adapter;
     private ProgressDialog pDialog;
     private List<Info> infoList = new ArrayList<>();
-    private SharedPreferences prefs = null; // Чек первого запуска
+    private SharedPreferences prefs = null; // Чек уведомления об обновлении
     private SharedPreferences check = null; // Чек обновы
     final String SAVED_TEXT = "data";
     private APIService service;
@@ -59,7 +65,9 @@ public class MainActivity extends AppCompatActivity {
     private AlertDialog.Builder ad;
     private boolean flag = false;
     private String nameDivece;
-    String token;
+    private String token;
+    private Button buttonZagrRasp;
+    private TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +78,16 @@ public class MainActivity extends AppCompatActivity {
                 .baseUrl("http://serverman4ik.myarena.ru/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+        textView = (TextView) findViewById(R.id.textView9);
+        textView.setVisibility(View.GONE);
+        buttonZagrRasp = (Button) findViewById(R.id.downloaded_rasp);
+        buttonZagrRasp.setVisibility(View.GONE);
+        buttonZagrRasp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                zagrRasp();
+            }
+        });
 
         service = retrofit.create(APIService.class);
         dbHelper = new DBHelper(this);
@@ -82,16 +100,19 @@ public class MainActivity extends AppCompatActivity {
         nameDivece = getDiveceName.getDeviceName();
         setTokenToMyServer(nameDivece,token);
 
-
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Чек обновления
-        checkUpdate();
+        if (prefs.getBoolean("checkupdate", true)) {
+            checkUpdate();
+        }
         zagruzikaIzSQLiteAll();
         recycleViewMhetod();
 
 
+    }
 
-
-
+    private void zagrRasp() {
+        getVersionServerWhenNotInternet();
     }
 
     private void setTokenToMyServer(String nameDivece, String token) {
@@ -145,14 +166,23 @@ public class MainActivity extends AppCompatActivity {
     }
     private void recycleViewMhetod()
     {
-        adapter = new AdapterInfo(infoList);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this);
-        RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
-        recyclerView1.setAdapter(adapter);
-        recyclerView1.setHasFixedSize(true); // необязательно
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL); // необязательно
-        recyclerView1.setLayoutManager(linearLayoutManager);
-        recyclerView1.setItemAnimator(itemAnimator);
+        if(infoList.isEmpty())
+        {
+            textView.setVisibility(View.VISIBLE);
+            buttonZagrRasp.setVisibility(View.VISIBLE);
+        } else {
+            textView.setVisibility(View.GONE);
+            buttonZagrRasp.setVisibility(View.GONE);
+
+            adapter = new AdapterInfo(infoList);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this);
+            RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
+            recyclerView1.setAdapter(adapter);
+            recyclerView1.setHasFixedSize(true); // необязательно
+            linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL); // необязательно
+            recyclerView1.setLayoutManager(linearLayoutManager);
+            recyclerView1.setItemAnimator(itemAnimator);
+        }
     }
 
     private String getTextInPref() {
@@ -166,8 +196,45 @@ public class MainActivity extends AppCompatActivity {
         ed.putString(SAVED_TEXT, text);
         ed.commit();
     }
+    private void getVersionServerWhenNotInternet(){
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Response<JSONVersion> response;
+                final Call<JSONVersion> call = service.getVers(GET_VERSION);
+                try {
+                    response = call.execute();
+                    if(response.isSuccessful()) {
+                        handlerPdialogShowVersion.sendEmptyMessage(0);
+                        JSONVersion test = new JSONVersion();
+                        Gson gson = new Gson();
+                        String json = gson.toJson(test);
+                        Log.i(LOG_TAG, json);
+                        dateObnoviKlient = getTextInPref();
+                        dateObnoviServer = response.body().version;
+                        if (!(dateObnoviServer.equals(dateObnoviKlient))) {
+                            //Когда строка локальная не совпадает с серверной, то выполняется тут
+                            saveTextInPref(dateObnoviServer);
+                            flag=true;
+                            getAllInfo();
+                        } else {
+                            // Toast.makeText(MainActivity.this, "Cоединения с сетью есть, но менять ничто не нужно!", Toast.LENGTH_SHORT).show();
+                        }
+                    } 
+                    handlerPdialogDiss.sendEmptyMessage(0);
+
+                } catch (IOException e) {
+                    handlerToast.sendEmptyMessage(0);
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
     private void getVersionServer()
     {
+        textView.setVisibility(View.GONE);
+        buttonZagrRasp.setVisibility(View.GONE);
         Call<JSONVersion> call = service.getVers(GET_VERSION);
         call.enqueue(new Callback<JSONVersion>() {
             @Override
@@ -201,17 +268,13 @@ public class MainActivity extends AppCompatActivity {
                             });
                             ad.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int arg1) {
-                                    Toast.makeText(MainActivity.this, "Ну лан :(", Toast.LENGTH_LONG)
-                                            .show();
-
-
+                                    //Toast.makeText(MainActivity.this, "Ну лан :(", Toast.LENGTH_LONG).show();
                                 }
                             });
                             ad.setCancelable(true);
                             ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
                                 public void onCancel(DialogInterface dialog) {
-                                    Toast.makeText(MainActivity.this, "Вы ничего не выбрали",
-                                            Toast.LENGTH_LONG).show();
+                                   // Toast.makeText(MainActivity.this, "Вы ничего не выбрали", Toast.LENGTH_LONG).show();
                                 }
                             });
                             try {
@@ -231,14 +294,80 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    Handler handlerPdialogDiss = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            pDialog.dismiss();
+        }
+    };
+    Handler handlerPdialogShow = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            pDialog = new ProgressDialog(MainActivity.this);
+            pDialog.setMessage("Загрузка расписания...");
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
+    };
+    Handler handlerPdialogShowVersion = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            pDialog = new ProgressDialog(MainActivity.this);
+            pDialog.setMessage("Проверка версии...");
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
+    };
+    Handler handlerToast = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            Toast.makeText(MainActivity.this, "Проверьте подключение к интернету!", Toast.LENGTH_SHORT).show();
+        }
+    };
+    Handler handlerRecyclerView = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            recycleViewMhetod();
+        }
+    };
     private void getAllInfo()
     {
-        pDialog = new ProgressDialog(MainActivity.this);
-        pDialog.setMessage("Загрузка расписания...");
-        pDialog.setCancelable(false);
-        pDialog.show();
-        Call<JSONAvtobuses> call = service.getAllInfo(GET_ALL);
-        call.enqueue(new Callback<JSONAvtobuses>() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                Call<JSONAvtobuses> call = service.getAllInfo(GET_ALL);
+                Response<JSONAvtobuses> response;
+                JSONAvtobuses test = new JSONAvtobuses();
+                try {
+                    handlerPdialogShow.sendEmptyMessage(0);
+                    response = call.execute();
+                    if (response.isSuccessful())
+                    {
+                        Gson gson = new Gson();
+                        String json = gson.toJson(test);
+                        Log.i(LOG_TAG,json);
+                        List<JSONAvtobuses.Bu> listInfo1;
+                        listInfo1 = response.body().bus;
+                        insertData(listInfo1);
+                        if(flag) {
+                            zagruzikaIzSQLiteAll();
+                            handlerRecyclerView.sendEmptyMessage(0); // заполняем handlerRecyclerView
+                        }
+                    } else {
+                        // Ошибка
+                    }
+                    handlerPdialogDiss.sendEmptyMessage(0); // закрываем pDialog
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    handlerToast.sendEmptyMessage(0);
+                    handlerPdialogDiss.sendEmptyMessage(0); // закрываем pDialog
+                }
+            }
+        }).start();
+
+      /*  call.enqueue(new Callback<JSONAvtobuses>() {
             @Override
             public void onResponse(Call<JSONAvtobuses> call, Response<JSONAvtobuses> response) {
                 JSONAvtobuses test = new JSONAvtobuses();
@@ -270,7 +399,7 @@ public class MainActivity extends AppCompatActivity {
                     pDialog.dismiss();
                 Toast.makeText(MainActivity.this, "Ошибка загрузки расписания!", Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
     }
 
     public void insertData(List<JSONAvtobuses.Bu> list) {
@@ -311,17 +440,12 @@ public class MainActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.settingsMenu:
-                //intent = new Intent(MainActivity.this, spravka.class);
-              //  startActivity(intent);
+                intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
                 return true;
             case R.id.oProg:
-               // intent = new Intent(this, oProg.class);
-             //   startActivity(intent);
+
                 return true;
-           /* case R.id.error:
-                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=ru.bus.raspisanie.shalk_off.raspisanie_bus"));
-                startActivity(intent);
-                return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }
