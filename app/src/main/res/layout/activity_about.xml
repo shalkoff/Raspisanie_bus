@@ -13,6 +13,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <ImageView
@@ -42,6 +46,7 @@
         </LinearLayout>
 
     </LinearLayout>
+    </LinearLayout>
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dip"
@@ -55,7 +60,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Дата последнего обновления:"
+            android:text="Дата последнего обновления расписания:"
             android:gravity="center"
             android:textColor="#000"
             android:textSize="15dp"/>
@@ -64,6 +69,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="дата"
+            android:gravity="center"
+            android:textColor="#000"
+            android:textSize="15dp" />
+        <TextView
+            android:id="@+id/version"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="версия"
             android:gravity="center"
             android:textColor="#000"
             android:textSize="15dp" />

@@ -61,7 +61,7 @@ public class TimeListActivity extends AppCompatActivity {
       //  tabLayout.setTabTextColors(Color.parseColor("#ffffff"),Color.parseColor(color));
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tab.getPosition()==0)
