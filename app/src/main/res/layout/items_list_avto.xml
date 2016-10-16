@@ -22,7 +22,7 @@
         android:gravity="center"
         android:text="310"
         android:textColor="#FFFFFF"
-        android:textSize="17dp"
+        android:textSize="19dp"
         android:lines="1"
         android:transitionName="nomeAvto"/>
     <LinearLayout

@@ -186,12 +186,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String getTextInPref() {
-        check = getPreferences(MODE_PRIVATE);
+        //check = getPreferences(MODE_PRIVATE);
+        check = PreferenceManager.getDefaultSharedPreferences(this);
         String savedText = check.getString(SAVED_TEXT, "");
         return savedText;
     }
     private void saveTextInPref(String text) {
-        check = getPreferences(MODE_PRIVATE);
+       // check = getPreferences(MODE_PRIVATE);
+        check = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor ed = check.edit();
         ed.putString(SAVED_TEXT, text);
         ed.commit();
@@ -221,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             // Toast.makeText(MainActivity.this, "Cоединения с сетью есть, но менять ничто не нужно!", Toast.LENGTH_SHORT).show();
                         }
-                    } 
+                    }
                     handlerPdialogDiss.sendEmptyMessage(0);
 
                 } catch (IOException e) {
@@ -260,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
                                     saveTextInPref(dateObnoviServer);
                                     flag=true;
                                     infoList.clear();
-                                    adapter.clearData();
+                                    //adapter.clearData();
                                     deleteSQL();
                                     getAllInfo();
                                     //Toast.makeText(MainActivity.this, "Вы сделали правильный выбор!",Toast.LENGTH_LONG).show();
@@ -366,40 +368,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }).start();
-
-      /*  call.enqueue(new Callback<JSONAvtobuses>() {
-            @Override
-            public void onResponse(Call<JSONAvtobuses> call, Response<JSONAvtobuses> response) {
-                JSONAvtobuses test = new JSONAvtobuses();
-                if (response.isSuccessful())
-                {
-                    Gson gson = new Gson();
-                    String json = gson.toJson(test);
-                    Log.i(LOG_TAG,json);
-                    List<JSONAvtobuses.Bu> listInfo1 = new ArrayList<>();
-                    listInfo1 = response.body().bus;
-                    insertData(listInfo1);
-                    if(flag) {
-                        zagruzikaIzSQLiteAll();
-                        recycleViewMhetod();
-                    }
-                    if (pDialog.isShowing())
-                        pDialog.dismiss();
-                } else {
-                    // Ошибка
-                    if (pDialog.isShowing())
-                        pDialog.dismiss();
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<JSONAvtobuses> call, Throwable t) {
-                if (pDialog.isShowing())
-                    pDialog.dismiss();
-                Toast.makeText(MainActivity.this, "Ошибка загрузки расписания!", Toast.LENGTH_SHORT).show();
-            }
-        });*/
     }
 
     public void insertData(List<JSONAvtobuses.Bu> list) {
@@ -444,7 +412,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             case R.id.oProg:
-
+                intent = new Intent(this, AboutActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

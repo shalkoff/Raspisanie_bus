@@ -3,6 +3,7 @@ package ru.bus.raspisanie.shalk_off.raspisanie_bus.Activitys;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -24,6 +25,8 @@ public class PriceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_price);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         Intent intent = getIntent();
         price = intent.getStringExtra("price");
         priceMoney = intent.getStringExtra("priceMoney");
@@ -44,5 +47,13 @@ public class PriceActivity extends AppCompatActivity {
             listPriceItems.add(new Price(priceArray[i],priceMoneyArray[i]));
         }
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -1,13 +1,17 @@
 package ru.bus.raspisanie.shalk_off.raspisanie_bus.Activitys;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.support.annotation.LayoutRes;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.view.MenuItem;
 
 import java.util.List;
 
@@ -19,12 +23,16 @@ import ru.bus.raspisanie.shalk_off.raspisanie_bus.R;
 
 public class SettingsActivity extends PreferenceActivity {
     private AppCompatDelegate mDelegate;
+    Context context;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         getDelegate().installViewFactory();
         getDelegate().onCreate(savedInstanceState);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        android.support.v7.app.ActionBar actionBar = getDelegate().getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             onCreatePreferenceActivity();
         } else {
@@ -95,5 +103,11 @@ public class SettingsActivity extends PreferenceActivity {
         getDelegate().onDestroy();
     }
 
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

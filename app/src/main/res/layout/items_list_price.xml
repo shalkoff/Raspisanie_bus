@@ -4,21 +4,21 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center">
 
         <TextView
             android:text="1111111"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textView"
             android:textAppearance="@style/TextAppearance.AppCompat"
             android:textSize="18sp"
-            android:lines="1"
-            android:layout_margin="5dp"
-            android:gravity="start" />
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center" />
 
         <TextView
             android:text="222222"
@@ -28,10 +28,9 @@
             android:textAppearance="@style/TextAppearance.AppCompat"
             android:textSize="18sp"
             android:textStyle="normal|bold"
-            android:layout_gravity="end"
-            android:lines="1"
-            android:gravity="end"
-            android:paddingRight="2dp"/>
+            android:gravity="center"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"/>
 
     </LinearLayout>
 

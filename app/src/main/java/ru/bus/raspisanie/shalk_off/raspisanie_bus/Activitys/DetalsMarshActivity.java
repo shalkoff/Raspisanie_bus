@@ -3,6 +3,7 @@ package ru.bus.raspisanie.shalk_off.raspisanie_bus.Activitys;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import ru.bus.raspisanie.shalk_off.raspisanie_bus.Caclulate;
@@ -16,6 +17,8 @@ public class DetalsMarshActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detals_marsh);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         textViewMarshSled = (TextView) findViewById(R.id.marsh_sled);
         textViewTehInfo = (TextView) findViewById(R.id.teh_info);
         textViewOstanovki = (TextView) findViewById(R.id.ostanovok);
@@ -34,5 +37,13 @@ public class DetalsMarshActivity extends AppCompatActivity {
         textViewKompaniya.setText(itemsArray[3]);
         textViewAddress.setText(itemsArray[4]);
         textViewPhone.setText(itemsArray[5]);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
