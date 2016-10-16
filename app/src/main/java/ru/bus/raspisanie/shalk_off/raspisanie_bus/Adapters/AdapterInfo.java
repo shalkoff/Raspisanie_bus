@@ -59,6 +59,7 @@ public class AdapterInfo extends RecyclerView.Adapter<AdapterInfo.MyViewHolder> 
         }
     }
     @Override
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void onBindViewHolder(final AdapterInfo.MyViewHolder holder, final int position) {
         posGlobal=position;
         Info info = infoList.get(position);
@@ -88,17 +89,14 @@ public class AdapterInfo extends RecyclerView.Adapter<AdapterInfo.MyViewHolder> 
 
             }
         });
+
         holder.linerBlock.setOnClickListener(new View.OnClickListener() {
             @TargetApi(Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
                 Log.i("RecyclerView", "Вы щёлкнули на позиции " + clickPos);
                 Intent intent = new Intent(context, TimeListActivity.class);
-                Pair pair1 = Pair.create(holder.nomerAvto, "nomerAvto");
-                Pair pair2 = Pair.create(holder.textView_name1, "name1");
-                Pair pair3 = Pair.create(holder.textView_name2, "name2");
-                ActivityOptions options = ActivityOptions.
-                        makeSceneTransitionAnimation((Activity) context, pair1, pair2, pair3);
+                ActivityOptions options;
                 //
                 intent.putExtra("color", infoList.get(position).getColor());
                 intent.putExtra("nomerAvto", infoList.get(position).getNomerAvto());
@@ -109,7 +107,18 @@ public class AdapterInfo extends RecyclerView.Adapter<AdapterInfo.MyViewHolder> 
                 intent.putExtra("sGoroda", infoList.get(position).getsGoroda());
                 intent.putExtra("price", infoList.get(position).getPrice());
                 intent.putExtra("priceMoney", infoList.get(position).getPriceMoney());
-                context.startActivity(intent, options.toBundle());
+               // context.startActivity(intent, options.toBundle());
+                if (Build.VERSION.SDK_INT > 20){
+                    Pair pair1 = Pair.create(holder.nomerAvto, "nomerAvto");
+                    Pair pair2 = Pair.create(holder.textView_name1, "name1");
+                    Pair pair3 = Pair.create(holder.textView_name2, "name2");
+                    options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, pair1, pair2, pair3);
+                    context.startActivity(intent, options.toBundle());
+                }
+                else {
+                    context.startActivity(intent);
+                }
+
             }
         });
     }

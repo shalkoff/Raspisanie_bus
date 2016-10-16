@@ -17,8 +17,7 @@
         </service>
 
         <activity
-            android:name=".Activitys.MainActivity"
-            android:screenOrientation="portrait">
+            android:name=".Activitys.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,18 +26,14 @@
         </activity>
         <activity
             android:name=".Activitys.TimeListActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/your_own_name" />
         <activity
-            android:name=".Activitys.PriceActivity"
-            android:screenOrientation="portrait" />
+            android:name=".Activitys.PriceActivity" />
         <activity
-            android:name=".Activitys.DetalsMarshActivity"
-            android:screenOrientation="portrait" />
+            android:name=".Activitys.DetalsMarshActivity" />
         <activity
             android:name=".Activitys.SettingsActivity"
-            android:label="Настройки"
-            android:screenOrientation="portrait" />
+            android:label="Настройки" />
         <activity android:name=".Activitys.AboutActivity"></activity>
     </application>
 

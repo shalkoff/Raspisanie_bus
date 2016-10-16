@@ -61,7 +61,7 @@ public class TimeListActivity extends AppCompatActivity {
       //  tabLayout.setTabTextColors(Color.parseColor("#ffffff"),Color.parseColor(color));
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tab.getPosition()==0)
@@ -90,7 +90,12 @@ public class TimeListActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
-                finishAfterTransition();
+                if (Build.VERSION.SDK_INT > 20){
+                    finishAfterTransition();
+                }
+                else {
+                    finish();
+                }
             }
         });
         imagePrice.setOnClickListener(new View.OnClickListener() {
@@ -121,7 +126,13 @@ public class TimeListActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        finishAfterTransition();
+        if (Build.VERSION.SDK_INT > 20){
+            finishAfterTransition();
+        }
+        else {
+           finish();
+        }
+
     }
     
 }
