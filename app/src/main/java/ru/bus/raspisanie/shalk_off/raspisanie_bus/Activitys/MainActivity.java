@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         nomerAvto = (TextView) findViewById(R.id.nomer_avtobusa);
         recyclerView1 = (RecyclerView) findViewById(R.id.recyclerView);
 
-        //Получаем токен имодель телефона
+        //Получаем токен и модель телефона
         token = FirebaseInstanceId.getInstance().getToken();
         GetDiveceName getDiveceName = new GetDiveceName();
         nameDivece = getDiveceName.getDeviceName();
