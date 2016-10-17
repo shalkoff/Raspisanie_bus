@@ -39,3 +39,5 @@ proguard/
 .externalNativeBuild
 
 # Firebase
+app/src/main/res/drawable/iconka_mimi.png
+app/src/main/res/drawable/ic_mini.png
