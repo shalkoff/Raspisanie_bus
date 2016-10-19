@@ -6,14 +6,14 @@
         android:id="@+id/sgoroda_swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    <ListView
-        android:paddingLeft="10dp"
-        android:paddingTop="10dp"
-        android:id="@+id/list2"
+    <android.support.v7.widget.RecyclerView
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:id="@+id/recycler2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:transitionName="zaglyshka2">
-    </ListView>
+    </android.support.v7.widget.RecyclerView>
     </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

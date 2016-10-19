@@ -6,14 +6,17 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import ru.bus.raspisanie.shalk_off.raspisanie_bus.Adapters.ListAdapterRasp;
+import ru.bus.raspisanie.shalk_off.raspisanie_bus.Adapters.RecycleAdapterRasp;
 import ru.bus.raspisanie.shalk_off.raspisanie_bus.Caclulate;
 import ru.bus.raspisanie.shalk_off.raspisanie_bus.DescribingClasses.Raspisanie;
 import ru.bus.raspisanie.shalk_off.raspisanie_bus.R;
@@ -22,14 +25,14 @@ import ru.bus.raspisanie.shalk_off.raspisanie_bus.R;
  * Created by shalk_off on 06.10.2016.
  */
 public class SgorodaFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
-    ArrayList<Raspisanie> raspList = new ArrayList<>();
-    ListAdapterRasp listAdapterRasp;
-    ListView listView;
+    List<Raspisanie> raspList = new ArrayList<>();
+    RecycleAdapterRasp recycleAdapterRasp;
     String sGoroda;
     String[] sGorodaArray;
     Caclulate caclulate;
     SwipeRefreshLayout mSwipeRefreshLayout;
     View view;
+    private RecyclerView recyclerView1;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -42,9 +45,15 @@ public class SgorodaFragment extends Fragment implements SwipeRefreshLayout.OnRe
        mSwipeRefreshLayout.setOnRefreshListener(this);
         // создаем адаптер
         getRaspisanie();
-        listAdapterRasp = new ListAdapterRasp(getContext(), raspList);
-        listView = (ListView) view.findViewById(R.id.list2);
-        listView.setAdapter(listAdapterRasp);
+        recyclerView1 = (RecyclerView) view.findViewById(R.id.recycler2);
+        recycleAdapterRasp = new RecycleAdapterRasp(raspList);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
+        recyclerView1.setAdapter(recycleAdapterRasp);
+        recyclerView1.setHasFixedSize(true); // необязательно
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL); // необязательно
+        recyclerView1.setLayoutManager(linearLayoutManager);
+        recyclerView1.setItemAnimator(itemAnimator);
         return view;
     }
     void getRaspisanie() {
@@ -61,11 +70,16 @@ public class SgorodaFragment extends Fragment implements SwipeRefreshLayout.OnRe
             @Override
             public void run() {
                 mSwipeRefreshLayout.setRefreshing(false);
-                listView.setAdapter(null);
                 raspList.clear();
                 getRaspisanie();
-                listAdapterRasp = new ListAdapterRasp(getContext(), raspList);
-                listView.setAdapter(listAdapterRasp);
+                recycleAdapterRasp = new RecycleAdapterRasp(raspList);
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+                RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
+                recyclerView1.setAdapter(recycleAdapterRasp);
+                recyclerView1.setHasFixedSize(true); // необязательно
+                linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL); // необязательно
+                recyclerView1.setLayoutManager(linearLayoutManager);
+                recyclerView1.setItemAnimator(itemAnimator);
             }
         }, 400);
     }
