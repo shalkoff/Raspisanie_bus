@@ -35,7 +35,6 @@ public class AdapterInfo extends RecyclerView.Adapter<AdapterInfo.MyViewHolder> 
 
     private Context context;
     private List<Info> infoList;
-    private List<Raspisanie> raspisanieList;
     private int posGlobal;
     public AdapterInfo(List<Info> infoList) {
         this.infoList = infoList;

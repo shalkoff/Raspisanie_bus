@@ -8,8 +8,8 @@ android {
         applicationId "ru.bus.raspisanie.shalk_off.raspisanie_bus"
         minSdkVersion 14
         targetSdkVersion 24
-        versionCode 5
-        versionName "2.1.1"
+        versionCode 6
+        versionName "2.2"
     }
     buildTypes {
         release {

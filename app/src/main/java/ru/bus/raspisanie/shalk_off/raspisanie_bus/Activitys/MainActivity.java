@@ -1,15 +1,19 @@
 package ru.bus.raspisanie.shalk_off.raspisanie_bus.Activitys;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -41,6 +45,7 @@ import ru.bus.raspisanie.shalk_off.raspisanie_bus.AppRater;
 import ru.bus.raspisanie.shalk_off.raspisanie_bus.DataBase.DBHelper;
 import ru.bus.raspisanie.shalk_off.raspisanie_bus.DescribingClasses.Info;
 import ru.bus.raspisanie.shalk_off.raspisanie_bus.GetDiveceName;
+import ru.bus.raspisanie.shalk_off.raspisanie_bus.JSONRequest.JSONAddToDB;
 import ru.bus.raspisanie.shalk_off.raspisanie_bus.JSONRequest.JSONAvtobuses;
 import ru.bus.raspisanie.shalk_off.raspisanie_bus.JSONRequest.JSONVersion;
 import ru.bus.raspisanie.shalk_off.raspisanie_bus.R;
@@ -53,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView1;
     private AdapterInfo adapter;
     private ProgressDialog pDialog;
-    private List<Info> infoList = new ArrayList<>();
+    final  private List<Info> infoList = new ArrayList<>();
     private SharedPreferences prefs = null; // Чек уведомления об обновлении
     private SharedPreferences check = null; // Чек обновы
     final String SAVED_TEXT = "data";
@@ -64,8 +69,6 @@ public class MainActivity extends AppCompatActivity {
     private String dateObnoviKlient;
     private AlertDialog.Builder ad;
     private boolean flag = false;
-    private String nameDivece;
-    private String token;
     private Button buttonZagrRasp;
     private TextView textView;
 
@@ -73,6 +76,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //Слушатель для токена
+        LocalBroadcastManager.getInstance(this).registerReceiver(tokenReceiver,
+                new IntentFilter("tokenReceiver"));
+
         AppRater.app_launched(this);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://serverman4ik.myarena.ru/")
@@ -94,13 +101,8 @@ public class MainActivity extends AppCompatActivity {
         nomerAvto = (TextView) findViewById(R.id.nomer_avtobusa);
         recyclerView1 = (RecyclerView) findViewById(R.id.recyclerView);
 
-        //Получаем токен и модель телефона
-        token = FirebaseInstanceId.getInstance().getToken();
-        GetDiveceName getDiveceName = new GetDiveceName();
-        nameDivece = getDiveceName.getDeviceName();
-        setTokenToMyServer(nameDivece,token);
-
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
         //Чек обновления
         if (prefs.getBoolean("checkupdate", true)) {
             checkUpdate();
@@ -110,13 +112,40 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+    BroadcastReceiver tokenReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String token = intent.getStringExtra("token");
+            if(token != null)
+            {
+                    setTokenToMyServer(token);
+            }
 
+        }
+    };
+    private void setTokenToMyServer(String token) {
+        //отправляем запрос на мой сервак, в php надо сделать проверку на валидность токена.
+        Call<JSONAddToDB> call = service.getData(token);
+        call.enqueue(new Callback<JSONAddToDB>() {
+            @Override
+            public void onResponse(Call<JSONAddToDB> call, Response<JSONAddToDB> response) {
+                if(response.isSuccessful()){
+                    Log.d(LOG_TAG,"Нотификация отправлена!");
+                    Log.d(LOG_TAG,"Значение success: "+response.body().success.toString());
+                    SharedPreferences.Editor ed = prefs.edit();
+                    ed.putString("success", response.body().success.toString());
+                    ed.commit();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JSONAddToDB> call, Throwable t) {
+
+            }
+        });
+    }
     private void zagrRasp() {
         getVersionServerWhenNotInternet();
-    }
-
-    private void setTokenToMyServer(String nameDivece, String token) {
-        //отправляем запрос на мой сервак, в php надо сделать проверку на валидность токена.
     }
 
     private void zagruzikaIzSQLiteAll() {
@@ -124,40 +153,49 @@ public class MainActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "ЖОПА");
         // делаем запрос всех данных из таблицы mytable, получаем Cursor
         Cursor c = db.query(DBHelper.NAME_TABLE, null, null, null, null, null, null);
-        if (c.moveToFirst()) {
-            // определяем номера столбцов по имени в выборке
-            int idColIndex = c.getColumnIndex("id");
-            int idAvtoColIndex = c.getColumnIndex("idAvto");
-            int nomer_avtoColIndex = c.getColumnIndex("nomerAvto");
-            int name1ColIndex = c.getColumnIndex("name1");
-            int name2ColIndex = c.getColumnIndex("name2");
-            int v_gorodColIndex = c.getColumnIndex("vGorod");
-            int s_gorodaColIndex = c.getColumnIndex("sGoroda");
-            int colorColIndex = c.getColumnIndex("color");
-            int priceColIndex = c.getColumnIndex("price");
-            int priceMoneyColIndex = c.getColumnIndex("priceMoney");
-            int detalsColIndex = c.getColumnIndex("detals");
-            do {
-                // получаем значения по номерам столбцов и пишем все в лог
-                Log.d(LOG_TAG,
-                        "ID = " + c.getInt(idColIndex) +
-                                ", idAvto = " + c.getString(idAvtoColIndex) +
-                                ", nomer_avto = " + c.getString(nomer_avtoColIndex) +
-                                ", v_gorod = " + c.getString(v_gorodColIndex) +
-                                ", s_goroda = " + c.getString(s_gorodaColIndex));
-                infoList.add(new Info(c.getString(idAvtoColIndex),
-                         c.getString(nomer_avtoColIndex),
-                        c.getString(name1ColIndex),
-                        c.getString(name2ColIndex),
-                        c.getString(v_gorodColIndex),
-                        c.getString(s_gorodaColIndex),
-                        c.getString(colorColIndex),
-                        c.getString(priceColIndex),
-                        c.getString(priceMoneyColIndex),
-                        c.getString(detalsColIndex)));
-            } while (c.moveToNext());
-        } else
-            Log.d(LOG_TAG, "0 rows");
+        try{
+            db.beginTransaction();
+            // тут делаем много инсертов
+            if (c.moveToFirst()) {
+                // определяем номера столбцов по имени в выборке
+                int idColIndex = c.getColumnIndex("id");
+                int idAvtoColIndex = c.getColumnIndex("idAvto");
+                int nomer_avtoColIndex = c.getColumnIndex("nomerAvto");
+                int name1ColIndex = c.getColumnIndex("name1");
+                int name2ColIndex = c.getColumnIndex("name2");
+                int v_gorodColIndex = c.getColumnIndex("vGorod");
+                int s_gorodaColIndex = c.getColumnIndex("sGoroda");
+                int colorColIndex = c.getColumnIndex("color");
+                int priceColIndex = c.getColumnIndex("price");
+                int priceMoneyColIndex = c.getColumnIndex("priceMoney");
+                int detalsColIndex = c.getColumnIndex("detals");
+                do {
+                    // получаем значения по номерам столбцов и пишем все в лог
+                    Log.d(LOG_TAG,
+                            "ID = " + c.getInt(idColIndex) +
+                                    ", idAvto = " + c.getString(idAvtoColIndex) +
+                                    ", nomer_avto = " + c.getString(nomer_avtoColIndex) +
+                                    ", v_gorod = " + c.getString(v_gorodColIndex) +
+                                    ", s_goroda = " + c.getString(s_gorodaColIndex));
+                    infoList.add(new Info(c.getString(idAvtoColIndex),
+                            c.getString(nomer_avtoColIndex),
+                            c.getString(name1ColIndex),
+                            c.getString(name2ColIndex),
+                            c.getString(v_gorodColIndex),
+                            c.getString(s_gorodaColIndex),
+                            c.getString(colorColIndex),
+                            c.getString(priceColIndex),
+                            c.getString(priceMoneyColIndex),
+                            c.getString(detalsColIndex)));
+                } while (c.moveToNext());
+            } else
+                Log.d(LOG_TAG, "0 rows");
+            db.setTransactionSuccessful();
+        } catch (Exception e){
+            // catch exception
+        } finally {
+            db.endTransaction();
+        }
         c.close();
     }
 
@@ -200,38 +238,7 @@ public class MainActivity extends AppCompatActivity {
     }
     private void getVersionServerWhenNotInternet(){
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Response<JSONVersion> response;
-                final Call<JSONVersion> call = service.getVers(GET_VERSION);
-                try {
-                    response = call.execute();
-                    if(response.isSuccessful()) {
-                        handlerPdialogShowVersion.sendEmptyMessage(0);
-                        JSONVersion test = new JSONVersion();
-                        Gson gson = new Gson();
-                        String json = gson.toJson(test);
-                        Log.i(LOG_TAG, json);
-                        dateObnoviKlient = getTextInPref();
-                        dateObnoviServer = response.body().version;
-                        if (!(dateObnoviServer.equals(dateObnoviKlient))) {
-                            //Когда строка локальная не совпадает с серверной, то выполняется тут
-                            saveTextInPref(dateObnoviServer);
-                            flag=true;
-                            getAllInfo();
-                        } else {
-                            // Toast.makeText(MainActivity.this, "Cоединения с сетью есть, но менять ничто не нужно!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    handlerPdialogDiss.sendEmptyMessage(0);
-
-                } catch (IOException e) {
-                    handlerToast.sendEmptyMessage(0);
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+       new getVersionServerWhenNotInternetClass().start();
     }
     private void getVersionServer()
     {
@@ -373,19 +380,28 @@ public class MainActivity extends AppCompatActivity {
     public void insertData(List<JSONAvtobuses.Bu> list) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        for (int i = 0; i < list.size(); i++) {
-            contentValues.put("idAvto", ""+list.get(i).idAvto);
-            contentValues.put("nomerAvto", ""+list.get(i).nomerAvto);
-            contentValues.put("name1", ""+list.get(i).name1);
-            contentValues.put("name2", ""+list.get(i).name2);
-            contentValues.put("vGorod", ""+list.get(i).vGorod);
-            contentValues.put("sGoroda", ""+list.get(i).sGoroda);
-            contentValues.put("color", ""+list.get(i).color);
-            contentValues.put("price", ""+list.get(i).price);
-            contentValues.put("priceMoney", ""+list.get(i).priceMoney);
-            contentValues.put("detals", ""+list.get(i).detals);
-            long rowID = db.insert(DBHelper.NAME_TABLE, null, contentValues);
-            Log.d(LOG_TAG, "row inserted, ID = " + rowID);
+        try{
+            db.beginTransaction();
+            // тут делаем много инсертов
+            for (int i = 0; i < list.size(); i++) {
+                contentValues.put("idAvto", ""+list.get(i).idAvto);
+                contentValues.put("nomerAvto", ""+list.get(i).nomerAvto);
+                contentValues.put("name1", ""+list.get(i).name1);
+                contentValues.put("name2", ""+list.get(i).name2);
+                contentValues.put("vGorod", ""+list.get(i).vGorod);
+                contentValues.put("sGoroda", ""+list.get(i).sGoroda);
+                contentValues.put("color", ""+list.get(i).color);
+                contentValues.put("price", ""+list.get(i).price);
+                contentValues.put("priceMoney", ""+list.get(i).priceMoney);
+                contentValues.put("detals", ""+list.get(i).detals);
+                long rowID = db.insert(DBHelper.NAME_TABLE, null, contentValues);
+                Log.d(LOG_TAG, "row inserted, ID = " + rowID);
+            }
+            db.setTransactionSuccessful();
+        } catch (Exception e){
+            // catch exception
+        } finally {
+            db.endTransaction();
         }
     }
     private void deleteSQL() {
@@ -417,6 +433,39 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    class getVersionServerWhenNotInternetClass extends Thread {
+        @Override
+        public void run() {
+            Response<JSONVersion> response;
+            final Call<JSONVersion> call = service.getVers(GET_VERSION);
+            try {
+                response = call.execute();
+                if(response.isSuccessful()) {
+                    handlerPdialogShowVersion.sendEmptyMessage(0);
+                    JSONVersion test = new JSONVersion();
+                    Gson gson = new Gson();
+                    String json = gson.toJson(test);
+                    Log.i(LOG_TAG, json);
+                    dateObnoviKlient = getTextInPref();
+                    dateObnoviServer = response.body().version;
+                    if (!(dateObnoviServer.equals(dateObnoviKlient))) {
+                        //Когда строка локальная не совпадает с серверной, то выполняется тут
+                        saveTextInPref(dateObnoviServer);
+                        flag=true;
+                        getAllInfo();
+                    } else {
+                        // Toast.makeText(MainActivity.this, "Cоединения с сетью есть, но менять ничто не нужно!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                handlerPdialogDiss.sendEmptyMessage(0);
+
+            } catch (IOException e) {
+                handlerToast.sendEmptyMessage(0);
+                e.printStackTrace();
+            }
         }
     }
 }
